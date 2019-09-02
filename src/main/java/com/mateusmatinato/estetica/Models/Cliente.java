@@ -50,6 +50,7 @@ public class Cliente implements Serializable {
     @OneToMany(cascade = CascadeType.ALL,
             fetch = FetchType.LAZY,
             mappedBy = "cliente")
+    @JsonIgnore
     private List<Atendimento> atendimentos;
     
 

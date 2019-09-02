@@ -53,6 +53,7 @@ public class AgendaController {
             at.put("start",a.getDataInicioAtendimento().toString());
             at.put("end", a.getDataFimAtendimento().toString());
             at.put("className", "bg-"+a.getServico().getId());
+            
             atendimentosJson.put(at);
         }
         
