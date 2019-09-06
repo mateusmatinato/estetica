@@ -6,8 +6,8 @@
 package com.mateusmatinato.estetica.Repository;
 
 import com.mateusmatinato.estetica.Models.Cliente;
+import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.repository.CrudRepository;
 
 /**
  *
@@ -15,5 +15,6 @@ import org.springframework.data.repository.CrudRepository;
  */
 public interface ClienteRepository extends JpaRepository<Cliente, Long> {
     
+    public List<Cliente> findByNomeStartingWith(String term);
     
 }

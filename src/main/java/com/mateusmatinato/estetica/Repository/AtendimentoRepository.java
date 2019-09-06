@@ -6,6 +6,7 @@
 package com.mateusmatinato.estetica.Repository;
 
 import com.mateusmatinato.estetica.Models.Atendimento;
+import java.util.Date;
 import java.util.List;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -18,5 +19,8 @@ public interface AtendimentoRepository extends JpaRepository<Atendimento, Long> 
     
     @Query(value = "SELECT a FROM Atendimento a LEFT JOIN FETCH a.cliente LEFT JOIN FETCH a.servico")
     public List<Atendimento> listaAtendimentosAgenda();
+    
+    public Atendimento findByDataInicioAtendimentoBetween(Date dataInicio, Date dataFim);
+    public List<Atendimento> findAllByDataInicioAtendimentoLessThanAndDataFimAtendimentoGreaterThan(Date endDate, Date startDate);
     
 }
