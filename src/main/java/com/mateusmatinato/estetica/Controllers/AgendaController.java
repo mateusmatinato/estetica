@@ -73,7 +73,7 @@ public class AgendaController {
             at.put("nomeCliente", a.getCliente().getNome());
             at.put("idCliente", a.getCliente().getId());
             at.put("idServico", a.getServico().getId());
-            at.put("parcelas", a.getParcelas());
+            at.put("cartao", a.isCartao());
             at.put("preco", a.getPreco());
             at.put("promocao", a.getPreco() == a.getServico().getPreco() ? false : true);
             at.put("duracao", (a.getDataFimAtendimento().getTime() - a.getDataInicioAtendimento().getTime()) / 1000);

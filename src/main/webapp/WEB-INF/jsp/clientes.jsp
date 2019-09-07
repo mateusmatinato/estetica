@@ -56,9 +56,11 @@
             </form>
         </div>
         <div class="box-footer">
+            <div class="pull-left">
+                <button id="btnExcluir" class="btn btn-danger">Excluir</button>
+            </div>
             <div class="pull-right">
                 <button id="btnLimpar" class="btn btn-default">Limpar</button>
-                <button id="btnExcluir" class="btn btn-danger">Excluir</button>
                 <button id="btnSalvar" class="btn btn-success">Salvar</button>
             </div>
         </div>

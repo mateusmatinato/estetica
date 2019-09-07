@@ -31,6 +31,10 @@ $(document).ready(function () {
             $("input[name='preco']").prop("readonly", true);
         }
     });
+    
+    $("#novoAgendamentoBtn").click(function (){
+       $("#modal-evento").modal('show'); 
+    });
 
 
     /* initialize the calendar
@@ -136,7 +140,11 @@ function carregarModal(info) {
     $("#idClienteSelecionado").val(info.idCliente);
     $("#selectServicoModal").find("option[value='" + info.idServico + "']").prop('selected', true);
     $("#preco").val(info.preco);
-    $("#parcelas").val(info.parcelas);
+    if (info.cartao === true) {
+        $("#cartao").prop('checked', true);
+    } else {
+        $("#cartao").prop('checked', false);
+    }
 
     $(".modal-title").text('Editar agendamento');
     $("#btnExcluirAtendimento").removeClass('hide');

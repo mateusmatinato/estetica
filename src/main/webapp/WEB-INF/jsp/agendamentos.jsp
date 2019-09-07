@@ -16,7 +16,7 @@
     <h1>
         Agendamentos
         <div class="pull-right">
-            <button onclick="abrirModal()" class="btn btn-sm btn-primary"><i class="fa fa-plus"> Novo</i></button>
+            <button id="novoAgendamentoBtn" class="btn btn-sm btn-primary"><i class="fa fa-plus"> Novo</i></button>
         </div>
     </h1>
 </section>
@@ -91,9 +91,11 @@
                             </div>
                         </div>
                         <div class="form-group col-md-4">
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-money"></i> Parcelas</span>
-                                <input id="parcelas" name="parcelas" type="number" min="1" step="1" max="12" class="form-control" value="1">
+                            <div class="checkbox">
+                                <label>
+                                    <input type="checkbox" id="cartao" name="cartao">
+                                    Cartão de crédito
+                                </label>
                             </div>
                         </div>
 
@@ -178,6 +180,11 @@
 
     .is-invalid input{
         border: 1px solid red;
+    }
+
+    .fc-event:hover {
+        color: #000!important;
+        font-weight: 700!important;
     }
 
 
