@@ -17,6 +17,7 @@ import javax.persistence.Id;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.NotNull;
 
 /**
  *
@@ -40,6 +41,9 @@ public class Servico implements Serializable {
             fetch = FetchType.LAZY,
             mappedBy = "servico")
      private List<Atendimento> atendimentos;
+     
+     @NotNull
+     private double preco;
     
 
     public long getId() {
@@ -58,6 +62,19 @@ public class Servico implements Serializable {
         this.nome = nome;
     }
 
-    
-    
+    public List<Atendimento> getAtendimentos() {
+        return atendimentos;
+    }
+
+    public void setAtendimentos(List<Atendimento> atendimentos) {
+        this.atendimentos = atendimentos;
+    }
+
+    public double getPreco() {
+        return preco;
+    }
+
+    public void setPreco(double preco) {
+        this.preco = preco;
+    }
 }

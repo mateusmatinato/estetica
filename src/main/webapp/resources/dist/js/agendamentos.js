@@ -1,6 +1,5 @@
 $(document).ready(function () {
 
-
     $("#nomeClienteModal").devbridgeAutocomplete({
         serviceUrl: 'autocompleteNome',
         autoSelectFirst: 'true',
@@ -14,6 +13,24 @@ $(document).ready(function () {
         }
     });
 
+    $("#selectServicoModal").change(function () {
+        //Deve pegar o preço do serviço se não estiver selecionado promoção
+        var preco = $(this).find(':selected').attr('name');
+        $("input[name='preco']").val(parseFloat(preco).toFixed(2));
+    });
+
+    $("input[name='preco']").change(function () {
+        $(this).val(parseFloat($(this).val()).toFixed(2));
+    });
+
+    $("#promocao").change(function () {
+        if ($(this).is(':checked') == true) {
+            $("input[name='preco']").prop("readonly", false);
+        } else {
+            $("#selectServicoModal").change();
+            $("input[name='preco']").prop("readonly", true);
+        }
+    });
 
 
     /* initialize the calendar
@@ -40,11 +57,15 @@ $(document).ready(function () {
         selectable: true,
         select: function (start, end, jsEvent, view) {
             var seconds = (end - start) / 1000;
-            abrirModal(this, start, seconds);
+            abrirModal(start, seconds, true);
         },
         minTime: "08:00:00",
         maxTime: "24:00:00",
-        height: "auto"
+        height: "auto",
+        eventClick: function (info) {
+            carregarModal(info);
+
+        }
     });
 
     $("#btnSalvarAtendimento").click(function () {
@@ -64,11 +85,31 @@ $(document).ready(function () {
             }
         });
     });
+    
+    $("#btnExcluirAtendimento").click(function (){
+        $.ajax({
+            url: 'excluirAtendimento?id='+$("#idAtendimentoModal").val(),
+            type: 'post',
+            success: function (data, textStatus, jqXHR) {
+                if (data === "sucesso") {
+                    $("#calendar").fullCalendar('refetchEvents');
+                    $("#formAtendimento").trigger("reset");
+                    $("#modal-evento").modal('hide');
+                }
+            }
+        });
+    });
 
     $('#modal-evento').on('hidden.bs.modal', function () {
         $("#horarioAgendamento").parent('.form-group').removeClass('is-invalid');
         $("#duracaoAgendamento").parent('.form-group').removeClass('is-invalid');
         $("#formAtendimento").trigger("reset");
+        $("input[name='preco']").prop("readonly", true);
+        $("#idClienteSelecionado").val('');
+        $("#idAtendimentoModal").val('0');
+        $(".modal-title").text('Novo agendamento');
+        
+    $("#btnExcluirAtendimento").addClass('hide');
     });
 
 
@@ -89,8 +130,31 @@ $('#horarioAgendamento').daterangepicker({
     }
 });
 
-function abrirModal(servico, data, duracao) {
+function carregarModal(info) {
+    $("#idAtendimentoModal").val(info.idAtendimento);
+    $("#nomeClienteModal").val(info.nomeCliente);
+    $("#idClienteSelecionado").val(info.idCliente);
+    $("#selectServicoModal").find("option[value='" + info.idServico + "']").prop('selected', true);
+    $("#preco").val(info.preco);
+    $("#parcelas").val(info.parcelas);
+
+    $(".modal-title").text('Editar agendamento');
+    $("#btnExcluirAtendimento").removeClass('hide');
     
+    if (info.promocao === true) {
+        $("#promocao").prop('checked', true);
+    } else {
+        $("#promocao").prop('checked', false);
+    }
+    abrirModal(info.start, info.duracao, false);
+}
+
+function abrirModal(data, duracao, flag) {
+    $("#promocao").change(); // Atualiza checkbox
+    if (flag == true) {
+        $("#selectServicoModal").change(); //Atualiza preço
+    }
+
     var date = new Date(null);
     date.setSeconds(duracao);
     var result = date.toISOString().substr(11, 8);

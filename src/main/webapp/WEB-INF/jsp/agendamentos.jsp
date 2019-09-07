@@ -44,12 +44,13 @@
             </div>
             <div class="modal-body">
                 <form method="POST" id="formAtendimento">
+                    <input type="hidden" id="idAtendimentoModal" name="id" value="0">
                     <div class="form-group">
                         <div class="form-group">
                             <label>Serviço</label>
                             <select name="servico" id="selectServicoModal" class="form-control">
                                 <c:forEach items="${servicos}" var="servico">
-                                    <option value="${servico.id}">${servico.nome}</div>
+                                    <option value="${servico.id}" name="${servico.preco}">${servico.nome}</div>
                                     </c:forEach>
                             </select>
                         </div>
@@ -75,25 +76,32 @@
                         </div>
                     </div>
                     <div class="row">
-
-                        <div class="form-group col-md-9">
-                            <div class="input-group">
-                                <span class="input-group-addon"><i class="fa fa-dollar"></i> Preço</span>
-                                <input name="preco" type="number" min="0.00" step="0.01" max="100000.00" class="form-control">
-                            </div>
-                        </div>
-                        <div class="form-group col-md-3">
+                        <div class="form-group col-md-4">
                             <div class="checkbox">
                                 <label>
-                                    <input type="checkbox">
+                                    <input type="checkbox" id="promocao">
                                     Promoção
                                 </label>
                             </div>
                         </div>
+                        <div class="form-group col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-dollar"></i> Preço</span>
+                                <input id="preco" name="preco" type="number" min="0.00" step="0.01" max="100000.00" class="form-control" readonly>
+                            </div>
+                        </div>
+                        <div class="form-group col-md-4">
+                            <div class="input-group">
+                                <span class="input-group-addon"><i class="fa fa-money"></i> Parcelas</span>
+                                <input id="parcelas" name="parcelas" type="number" min="1" step="1" max="12" class="form-control" value="1">
+                            </div>
+                        </div>
+
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
+                <button type="button" class="btn btn-danger pull-left hide" id="btnExcluirAtendimento">Excluir</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
                 <button type="button" class="btn btn-primary" id="btnSalvarAtendimento">Salvar</button>
             </div>
@@ -115,18 +123,18 @@
 
 <style>
     .bg-1{
-        color: white;
-        background-color: rgb(0, 166, 90);
+        color: black;
+        background-color: #c9f5f3;
     }
 
     .bg-2{
-        color: white;
-        background-color: rgb(243, 156, 18);
+        color: black;
+        background-color: #fffea6;
     }
 
     .bg-3{
-        color: white;
-        background-color: rgb(0, 192, 239);
+        color: black;
+        background-color: #ffbfe9;
     }
 
     .bg-4{
@@ -162,15 +170,15 @@
     .invalid-feedback{
         display: none;
     }
-    
+
     .is-invalid .invalid-feedback{
         display: block;
         color: red;
     }
-    
+
     .is-invalid input{
         border: 1px solid red;
     }
-    
-    
+
+
 </style>

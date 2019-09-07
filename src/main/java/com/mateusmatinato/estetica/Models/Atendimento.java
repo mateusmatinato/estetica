@@ -55,6 +55,9 @@ public class Atendimento implements Serializable {
     
     @NotNull
     private double preco;
+    
+    @NotNull
+    private int parcelas;
 
     public long getId() {
         return id;
@@ -110,6 +113,14 @@ public class Atendimento implements Serializable {
 
     public void setPreco(double preco) {
         this.preco = preco;
+    }
+
+    public int getParcelas() {
+        return parcelas;
+    }
+
+    public void setParcelas(int parcelas) {
+        this.parcelas = parcelas;
     }
     
     
