@@ -5,3 +5,7 @@
 .selected:hover{
     background-color: #badff4!important;
 }
+
+.swal2-cancel{
+    margin-right: 10px;
+}

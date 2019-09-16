@@ -70,37 +70,91 @@ $(document).ready(function () {
     });
 
     $("#btnExcluir").click(function () {
-        $.ajax({
-            url: "deleteCliente/" + $("#idClienteForm").val(),
-            type: 'DELETE',
-            data: $("#formCliente").serialize(),
-            success: function (data) {
-                $("#btnLimpar").click();
-                table.ajax.reload();
-            }
+        var idCliente = $("#idClienteForm").val();
+        if (idCliente != '') {
+            var nomeCliente = $("#id_" + idCliente).find('td:first-child').text();
+            Swal.fire({
+                title: "Confirmar exclusão",
+                text: "Tem certeza que deseja excluir o cadastro do(a) cliente " + nomeCliente + "?",
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: 'Sim, deletar!',
+                cancelButtonText: 'Não, cancelar!',
+                reverseButtons: true,
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger'
+                },
+                buttonsStyling: false
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        url: "deleteCliente/" + $("#idClienteForm").val(),
+                        type: 'DELETE',
+                        data: $("#formCliente").serialize(),
+                        success: function (data) {
+                            Swal.fire('Exclusão realizada', 'O cadastro foi excluído com sucesso!', 'success');
+                            $("#btnLimpar").click();
+                            table.ajax.reload();
+                        }
+                    });
 
-        });
+                }
+            });
+        } else {
+            Swal.fire('Erro ao excluir', 'Você não selecionou nenhum cliente para excluir!', 'error');
+        }
     });
 
     $("#btnSalvar").click(function () {
+        var nomeCliente = $("#nomeCliente").val();
         if ($("#idClienteForm").val() === '') {
             var url = "salvarCliente/";
             var type = 'POST';
+            var title = "Confirmar cadastro";
+            var msg = "Tem certeza que deseja cadastrar o(a) cliente " + nomeCliente + "?";
+            var msgSuccess = "Cadastro realizado";
+            var textSuccess = "O cadastro foi realizado com sucesso";
         } else {
             var url = "editarCliente/" + $("#idClienteForm").val();
             var type = 'PUT';
+            var title = "Confirmar edição";
+            var msg = "Tem certeza que deseja editar o cadastro  do(a) cliente " + nomeCliente + "?";
+            var msgSuccess = "Cadastro alterado";
+            var textSuccess = "O cadastro foi alterado com sucesso";
         }
-        var $form = $("#formCliente");
-        var clienteNovo = getFormData($form);
-        $.ajax({
-            url: url,
-            type: type,
-            data: JSON.stringify(clienteNovo),
-            contentType: "application/json",
-            success: function (data) {
-                table.ajax.reload();
+        Swal.fire({
+            title: title,
+            text: msg,
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sim',
+            cancelButtonText: 'Não',
+            reverseButtons: true,
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        }).then((result) => {
+            if (result.value) {
+                var $form = $("#formCliente");
+                var clienteNovo = getFormData($form);
+                $.ajax({
+                    url: url,
+                    type: type,
+                    data: JSON.stringify(clienteNovo),
+                    contentType: "application/json",
+                    success: function (data) {
+                        Swal.fire(msgSuccess, textSuccess, 'success');
+                        $("#btnLimpar").click();
+                        table.ajax.reload();
+                    },
+                    error: function(data){
+                        Swal.fire("Erro","Não foi possível realizar essa operação, tente novamente.",'error');
+                    }
+                });
             }
-
         });
     });
 

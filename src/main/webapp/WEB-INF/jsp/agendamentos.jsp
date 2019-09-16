@@ -58,6 +58,9 @@
                     <div class="form-group">
                         <label for="nomeClienteModal">Nome do Cliente</label>
                         <input name="cliente.nome" type="text" class="form-control" id="nomeClienteModal" placeholder="" required>
+                        <div class="invalid-feedback">
+                            Selecione um cliente para o atendimento.
+                        </div>
                         <input name="cliente.id" type="hidden" id="idClienteSelecionado" required>
                     </div>
                     <div class="row">
@@ -105,7 +108,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-danger pull-left hide" id="btnExcluirAtendimento">Excluir</button>
                 <button type="button" class="btn btn-default" data-dismiss="modal">Cancelar</button>
-                <button type="button" class="btn btn-primary" id="btnSalvarAtendimento">Salvar</button>
+                <button type="button" class="btn btn-success" id="btnSalvarAtendimento">Salvar</button>
             </div>
         </div>
     </div>

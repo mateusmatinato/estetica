@@ -1,5 +1,5 @@
 $(document).ready(function () {
-
+    
     $(".content-wrapper").load('home');
 
     $(".btnMenu").click(function (e) {

@@ -13,6 +13,12 @@ $(document).ready(function () {
         }
     });
 
+    $("#nomeClienteModal").focusout(function () {
+        if ($("#idClienteSelecionado").val() == '') {
+            $(this).val('');
+        }
+    });
+
     $("#selectServicoModal").change(function () {
         //Deve pegar o preço do serviço se não estiver selecionado promoção
         var preco = $(this).find(':selected').attr('name');
@@ -31,9 +37,9 @@ $(document).ready(function () {
             $("input[name='preco']").prop("readonly", true);
         }
     });
-    
-    $("#novoAgendamentoBtn").click(function (){
-       $("#modal-evento").modal('show'); 
+
+    $("#novoAgendamentoBtn").click(function () {
+        $("#modal-evento").modal('show');
     });
 
 
@@ -73,35 +79,104 @@ $(document).ready(function () {
     });
 
     $("#btnSalvarAtendimento").click(function () {
-        $.ajax({
-            url: 'salvarAtendimento',
-            data: $("#formAtendimento").serialize(),
-            type: 'post',
-            success: function (data, textStatus, jqXHR) {
-                if (data === "sucesso") {
-                    $("#calendar").fullCalendar('refetchEvents');
-                    $("#formAtendimento").trigger("reset");
-                    $("#modal-evento").modal('hide');
-                } else {
-                    $("#horarioAgendamento").parent('.form-group').addClass('is-invalid');
-                    $("#duracaoAgendamento").parent('.form-group').addClass('is-invalid');
-                }
+        if (validaAgendamento()) {
+            var isEdit = $("#idAtendimentoModal").val() != 0 ? true : false;
+            if (isEdit) {
+                var title = "Confirmar alterações de agendamento";
+                var btnConfirmar = "Sim, alterar!";
+                var titleSuccess = "Alteração realizada";
+                var msgSuccess = "As alterações no agendamento foram realizadas com sucesso!";
+            } else {
+                var title = "Confirmar agendamento";
+                var btnConfirmar = "Sim, agendar!";
+                var titleSuccess = "Agendamento realizado";
+                var msgSuccess = "O agendamento foi realizado com sucesso!";
             }
-        });
+
+            var text = "Verifique os dados abaixo:<br>";
+            text += "<b>Cliente:</b> " + $("#nomeClienteModal").val() + "<br>";
+            text += "<b>Serviço: </b>" + $("#selectServicoModal").find(':selected').text() + "<br>";
+            text += "<b>Data e Hora: </b>" + $("#horarioAgendamento").val() + "<br>";
+            text += "<b>Duração: </b>" + $("#duracaoAgendamento").val().substr(0, 5) + "<br>";
+            Swal.fire({
+                title: title,
+                html: text,
+                type: 'warning',
+                showCancelButton: true,
+                confirmButtonText: btnConfirmar,
+                cancelButtonText: 'Não, cancelar!',
+                reverseButtons: true,
+                customClass: {
+                    confirmButton: 'btn btn-success',
+                    cancelButton: 'btn btn-danger'
+                },
+                width: '34rem',
+                buttonsStyling: false
+            }).then((result) => {
+                if (result.value) {
+                    $.ajax({
+                        url: 'salvarAtendimento',
+                        data: $("#formAtendimento").serialize(),
+                        type: 'post',
+                        success: function (data, textStatus, jqXHR) {
+                            if (data === "sucesso") {
+                                Swal.fire(titleSuccess, msgSuccess, 'success');
+                                $("#calendar").fullCalendar('refetchEvents');
+                                $("#formAtendimento").trigger("reset");
+                                $("#modal-evento").modal('hide');
+                            } else {
+                                Swal.fire('Erro ao agendar!', 'Você já possui agendamentos nesse horário', 'error');
+                                $("#horarioAgendamento").parent('.form-group').addClass('is-invalid');
+                                $("#duracaoAgendamento").parent('.form-group').addClass('is-invalid');
+                            }
+                        },
+                        error: function (data) {
+                            Swal.fire('Erro ao agendar!', 'Ocorreu um erro ao realizar o agendamento, tente novamente.', 'error');
+                        }
+                    });
+                }
+            });
+        } else {
+            Swal.fire('Erro ao agendar!', 'Você precisa selecionar um cliente para o atendimento.', 'error');
+        }
+
     });
-    
-    $("#btnExcluirAtendimento").click(function (){
-        $.ajax({
-            url: 'excluirAtendimento?id='+$("#idAtendimentoModal").val(),
-            type: 'post',
-            success: function (data, textStatus, jqXHR) {
-                if (data === "sucesso") {
-                    $("#calendar").fullCalendar('refetchEvents');
-                    $("#formAtendimento").trigger("reset");
-                    $("#modal-evento").modal('hide');
-                }
+
+    $("#btnExcluirAtendimento").click(function () {
+        var text = "<b>Cliente:</b> " + $("#nomeClienteModal").val() + "<br>";
+        text += "<b>Serviço: </b>" + $("#selectServicoModal").find(':selected').text() + "<br>";
+        text += "<b>Data e Hora: </b>" + $("#horarioAgendamento").val() + "<br>";
+        text += "<b>Duração: </b>" + $("#duracaoAgendamento").val().substr(0, 5) + "<br>";
+        Swal.fire({
+            title: "Confirmar exclusão",
+            html: "Tem certeza que deseja excluir o seguinte agendamento:<br>" + text,
+            type: 'warning',
+            showCancelButton: true,
+            confirmButtonText: 'Sim, excluir!',
+            cancelButtonText: 'Não, cancelar!',
+            reverseButtons: true,
+            customClass: {
+                confirmButton: 'btn btn-success',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        }).then((result) => {
+            if (result.value) {
+                $.ajax({
+                    url: 'excluirAtendimento?id=' + $("#idAtendimentoModal").val(),
+                    type: 'post',
+                    success: function (data, textStatus, jqXHR) {
+                        if (data === "sucesso") {
+                            Swal.fire('Agendamento excluído!','O agendamento foi excluído com sucesso.','success');
+                            $("#calendar").fullCalendar('refetchEvents');
+                            $("#formAtendimento").trigger("reset");
+                            $("#modal-evento").modal('hide');
+                        }
+                    }
+                });
             }
         });
+
     });
 
     $('#modal-evento').on('hidden.bs.modal', function () {
@@ -112,8 +187,8 @@ $(document).ready(function () {
         $("#idClienteSelecionado").val('');
         $("#idAtendimentoModal").val('0');
         $(".modal-title").text('Novo agendamento');
-        
-    $("#btnExcluirAtendimento").addClass('hide');
+
+        $("#btnExcluirAtendimento").addClass('hide');
     });
 
 
@@ -148,7 +223,7 @@ function carregarModal(info) {
 
     $(".modal-title").text('Editar agendamento');
     $("#btnExcluirAtendimento").removeClass('hide');
-    
+
     if (info.promocao === true) {
         $("#promocao").prop('checked', true);
     } else {
@@ -170,4 +245,15 @@ function abrirModal(data, duracao, flag) {
     $('#horarioAgendamento').data('daterangepicker').setStartDate(moment(data).format("DD/MM/YYYY HH:mm"));
     $("#modal-evento").modal("show");
 
+}
+
+function validaAgendamento() {
+    if ($("#idClienteSelecionado").val() == '') {
+        //Não selecionou nenhum cliente
+        $("#nomeClienteModal").parent('.form-group').addClass('is-invalid');
+        return false;
+    } else {
+        $("#nomeClienteModal").parent('.form-group').removeClass('is-invalid');
+        return true;
+    }
 }

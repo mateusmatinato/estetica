@@ -25,7 +25,8 @@
         <link rel="stylesheet" href="resources/dist/css/skins/skin-blue.min.css">
         <!-- CSS Pace -->
         <link rel="stylesheet" href="resources/plugins/pace/pace.min.css">
-        
+        <!-- Library Confirmação -->
+        <link rel="stylesheet" href="resources/plugins/sweetalert/sweetalert2.min.css">
         
         <link rel="stylesheet" href="resources/dist/css/style.css">
         
@@ -168,6 +169,9 @@
         <script src="resources/plugins/input-mask/jquery.inputmask.js"></script>
         <script src="resources/plugins/input-mask/jquery.inputmask.date.extensions.js"></script>
         <script src="resources/plugins/input-mask/jquery.inputmask.extensions.js"></script>
+        
+        <!--Library confirmação -->
+        <script src="resources/plugins/sweetalert/sweetalert2.min.js"></script>
         
         <script src="resources/dist/js/index.js"></script>
 
